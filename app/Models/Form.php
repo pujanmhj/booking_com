@@ -9,8 +9,6 @@ use Tymon\JWTAuth\Contracts\Providers\Auth;
 
 class Form extends Model
 {
-
-
     use HasFactory;
-    protected $fillable = ['nameOfProperty','category','description','gmap','price','image'];
+     protected $fillable = ['nameOfProperty','category','description','gmap','price','image','user_id'];
 }

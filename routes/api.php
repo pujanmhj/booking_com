@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\PropertyController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +17,8 @@ use App\Http\Controllers\FormController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
@@ -28,10 +32,17 @@ Route::group([
 
 Route::post('register', [UserController::class,'register']);
 Route::group([
-    'middleware' => 'auth:api',
+    // 'middleware' => 'auth:api',
 ], function ($router) {
     Route::get('/test', [FormController::class, 'index']);
+// Route::get('/getAlldata', [FormController::class, 'getAll']);
     Route::post('/formstore', [FormController::class, 'store']);
 });
-Route::get('/getAlldata', [FormController::class, 'getAll']);
+
+
+Route::group(['middlerware'=>"auth:api"],function () {
+    Route::get('/nabin',[PropertyController::class,'index']);
+});
+
+
 

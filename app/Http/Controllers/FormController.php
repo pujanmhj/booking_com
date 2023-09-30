@@ -13,25 +13,30 @@ class FormController extends Controller
     public function index(Request $request)
     {
 
-       $data = Form::where('user_id',$request->user()->id)->get();
-       return response()->json($data);
+       $data = Form::all();
+       return response()->json([
+        'status' => 1,
+        'message' => 'Form listed',
+        'data' => $data
+    ]);
     }
-    public function getAll(Request $request)
-    {
+    // public function getAll(Request $request)
+    // {
 
-        $data = Form::all();
-        return response()->json($data);
-    }
+    //     $data = Form::all();
+    //     return response()->json([
+    //         'status'=>1,
+    //         'message' =>'All form listed sucessfull'
+    //     ]);
+    // }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-
             try {
-                $userId = $request->user()->id;
-//                return response()->json(['data'=>$userId]);
+                $user_id = auth()->user()->id;
                 $bookingForm = new Form();
                 $bookingForm->nameOfProperty = $request->nameOfProperty;
                 $bookingForm->category = $request->category;
@@ -39,16 +44,23 @@ class FormController extends Controller
                 $bookingForm->gmap = $request->gmap;
                 $bookingForm->price = $request->price;
 
-                if($request->file('image')) {
-                    $image = $request->file('image');
+//                if($request->file('image')){
+                foreach($request->file('image') as $imageFile) {
+//                    $image = $request->file('image');
+
                     $folder_path = public_path().DIRECTORY_SEPARATOR.'storage';
-                    $file_name = $image->getClientOriginalName();
-                    $image->move($folder_path, $file_name);
+                    $file_name = $imageFile->getClientOriginalName();
+                    $imageFile->move($folder_path, $file_name);
                     $bookingForm->image = $file_name;
-                } else {
-                    $bookingForm->image = '';
+                    return  $bookingForm;
                 }
-                // return $bookingForm;
+//            }
+//                return $bookingForm;
+//                else {
+//                    $bookingForm->image = '';
+//                }
+                $bookingForm->user_id = $user_id;
+                 return $bookingForm;
                 $bookingForm->save();
                 return response()->json([
                     'status' => 1,
